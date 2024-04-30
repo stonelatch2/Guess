@@ -1,43 +1,48 @@
 package com.shin.guess
 
+
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.shin.guess.ui.theme.GuessTheme
+import com.shin.guess.databinding.ActivityMainBinding
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    val secretNumber = SecretNumber()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            GuessTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
-                }
-            }
-        }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        Log.d("mainacti", "secret" + secretNumber.secret)
+//        setContentView(R.layout.activity_main)
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-            text = "Hello $name!",
-            modifier = modifier
-    )
-}
+    fun check(view:View){
+       val n = binding.number.text.toString().toInt()
+        println("number ${n}")
+        Log.d("mainacti", "number" + n)
+        val message = ""
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GuessTheme {
-        Greeting("Android")
+        if (secretNumber.validate(n)<0){
+            Toast.makeText(this, "Bigger", Toast.LENGTH_LONG).show()
+             message = "Bigger"
+        }
+        else if (secretNumber.validate(n)>0){
+            Toast.makeText(this, "Smaller", Toast.LENGTH_LONG).show()
+            message = "Smaller"
+        }
+        else
+        {
+            Toast.makeText(this, "Correct", Toast.LENGTH_LONG).show()
+            message = "Correct"
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Message").setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
     }
 }
